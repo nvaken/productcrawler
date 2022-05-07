@@ -1,0 +1,23 @@
+{% extends'base.html.twig' %}
+
+{% block body %}
+<table border="1" cellpadding="5">
+        <tr>
+                <th>Name</th>
+                <th>URL</th>
+                <th>Current price</th>
+                <th>High price</th>
+                <th>Low price</th>
+        </tr>
+        {% for row in rows %}
+        <tr>
+                <td>{{ row.name }}</td>
+                <td>{{ row.url }}</td>
+                <td>{{ row.current }}</td>
+                <td>{{ row.high }}</td>
+                <td>{{ row.low }}</td>
+        </tr>
+        {% endfor %}
+</table>
+</ul>
+{% endblock %}

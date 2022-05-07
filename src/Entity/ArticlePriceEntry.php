@@ -46,7 +46,7 @@ class ArticlePriceEntry
      * @ORM\PreUpdate
      */
     public function updateDates (): void {
-        if (!$this->getCreated()) {
+        if (!$this->created) {
             $this->setCreated(new DateTime('now'));
         }
     }

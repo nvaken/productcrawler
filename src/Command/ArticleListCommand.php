@@ -63,7 +63,7 @@ class ArticleListCommand extends Command
 //            $rows[] = [' ', ' ', ' ', ' '];
 
         }
-        $io->table(['Article', 'URL', 'Current', 'High', 'Low'], $rows);
+        $io->table(['Article', 'URL', 'Latest', 'High', 'Low'], $rows);
 
         return Command::SUCCESS;
     }

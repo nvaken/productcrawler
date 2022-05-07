@@ -270,4 +270,8 @@ class Article
 
         return $lowEntry;
     }
+
+    public function getPriceCurrent() {
+      return $this->getArticlePriceEntries()->last();
+    }
 }

@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ article.name }}</h1>
+    <div class="row">
+        <div class="col-sm">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th scope="row">Name</th>
+                    <td>{{ article.name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Current</th>
+                    <td>{{ article.getPriceCurrent().getPrice() }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">High</th>
+                    <td>{{ article.getPriceHigh().getPrice() }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Low</th>
+                    <td>{{ article.getPriceLow().getPrice() }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">URL</th>
+                    <td><a href="{{ article.url }}" target="_blank">{{ article.url }}</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm">
+            {{ render_chart(chart, { class: 'asdf' }) }}
+        </div>
+    </div>
+{% endblock %}

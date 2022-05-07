@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table class="table">
+        <thead class="thead-light">
+        <tr>
+            <td>Name</td>
+            <td>Shop URL</td>
+            <td>Current</td>
+            <td>Low</td>
+            <td>High</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in rows %}
+            <tr>
+                <td><a href="{{ path('article', {id: row.id}) }}">{{ row.name }}</a></td>
+                <td><a href="{{ row.shop_url }}" target="_blank">{{ row.shop_url }}</a></td>
+                <td>{{ row.price_current }}</td>
+                <td>{{ row.price_low }}</td>
+                <td>{{ row.price_high }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
