@@ -3,16 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Scrapers\ArticleScraper;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Http\Message\RequestInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-class IndexController extends AbstractController
+class ArticleController extends AbstractController
 {
 
   /**
@@ -55,9 +60,9 @@ class IndexController extends AbstractController
   }
 
   /**
-   * @Route("/article/{id}", name="article")
+   * @Route("/article/{id}", name="article", requirements={"id": "\d+"})
    */
-  public function productDetail(ChartBuilderInterface $chartBuilder, int $id): Response
+  public function articleDetail(ChartBuilderInterface $chartBuilder, int $id): Response
   {
 
     $articleRepository = $this->em->getRepository(Article::class);
@@ -98,6 +103,11 @@ class IndexController extends AbstractController
     $chart->setData($data);
     $chart->setOptions([
       'spanGaps' => TRUE,
+      'scales' => [
+        'y' => [
+          'beginAtZero' => TRUE,
+        ],
+      ],
       'cubicInterpolationMode' => 'monotone',
       'borderColor' => 'blue',
     ]);
@@ -107,6 +117,61 @@ class IndexController extends AbstractController
       'article' => $article,
       'chart' => $articleChart,
     ]);
+  }
+
+  /**
+   * @Route("/article/new", name="article_new")
+   */
+  public function articleAdd(Request $request, ArticleScraper $articleScraper) {
+    $article = new Article();
+
+    $form = $this->createFormBuilder($article)
+      ->add('url', UrlType::class)
+      ->add('save', SubmitType::class, ['label' => 'Save'])
+      ->getForm();
+
+    $form->handleRequest($request);
+    if ($form->isSubmitted() && $form->isValid()) {
+      /** @var Article $article */
+      $article = $form->getData();
+
+      $url = $article->getUrl();
+      $articleScraper->setUrl($url);
+      $article = $articleScraper->fetchArticle();
+
+      $this->em->persist($article);
+      $this->em->flush();
+
+      $this->addFlash('success', 'Successfully added article');
+      return $this->redirectToRoute('article_list');
+    }
+
+    return $this->render(
+      'articles/form.html.twig',
+      [
+        'form' => $form->createView(),
+      ]
+    );
+  }
+
+  /**
+   * @Route("/article/{id}/delete", name="article_delete", requirements={"id": "\d+"})
+   */
+  public function articleDelete(int $id) {
+    $repository = $this->em->getRepository(Article::class);
+    $article = $repository->find($id);
+
+    if (!$article) {
+      $this->addFlash('warning', 'Article not found?');
+      return $this->redirectToRoute('article_list');
+    }
+
+
+    $this->em->remove($article);
+    $this->em->flush();
+
+    $this->addFlash('success', 'Successfully deleted article.');
+    return $this->redirectToRoute('article_list');
   }
 
 }

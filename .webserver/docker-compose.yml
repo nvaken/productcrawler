@@ -50,7 +50,7 @@ services:
     #      PHP_XDEBUG_CLIENT_HOST: host.docker.internal # Docker 18.03+ Mac/Win
     #      PHP_XDEBUG_CLIENT_HOST: 10.0.75.1 # Windows
     volumes:
-      - ../.:/var/www/html:cached
+      - ../.:/var/www/html
   ## Alternative for macOS users: Mutagen https://wodby.com/docs/stacks/php/local#docker-for-mac
   #    - backend:/var/www/html
   ## For XHProf and Xdebug profiler traces
@@ -68,7 +68,7 @@ services:
       NGINX_VHOST_PRESET: php
       NGINX_SERVER_ROOT: /var/www/html/public
     volumes:
-      - ../.:/var/www/html:cached
+      - ../.:/var/www/html
     ## Alternative for macOS users: Mutagen https://wodby.com/docs/stacks/php/local#docker-for-mac
     #    - backend:/var/www/html
     labels:
